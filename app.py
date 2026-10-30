@@ -197,7 +197,10 @@ Return ONLY the numeric ID (0, 1, 2, or 3). No explanation.
 
 Query: {state['query']}"""
     result = llm.invoke([HumanMessage(content=prompt)]).content.strip()
-    return {"intent": result[:1]}
+    # gpt-oss may add words/reasoning around the answer, so pull the category
+    # digit out of the reply instead of trusting the first character.
+    digits = re.findall(r"[0-3]", result)
+    return {"intent": digits[-1] if digits else "2"}
 
 def router_node(state: OrderState):
     return "order_agent" if state["intent"] == "2" else "exit_node"
