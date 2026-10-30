@@ -520,7 +520,7 @@ else:
             st.rerun()
         st.divider()
         st.caption(
-            "Powered by LangGraph · GPT-4o-mini\n\n"
+            "Powered by LangGraph · Groq gpt-oss · build v2\n\n"
             "Guardrails: Input intent · Output safety · Conversation monitor"
         )
 
