@@ -211,7 +211,12 @@ def exit_node(state: OrderState):
         "1": "Thank you! I hope I was able to assist with your query.",
         "3": "Apologies, I'm currently only able to help with information about your placed orders.",
     }
-    return {"final_response": mapping.get(state["intent"], "How can I help you?")}
+    if state["intent"] in mapping:
+        return {"final_response": mapping[state["intent"]]}
+    # Reached here only when a guardrail blocked a normal (intent "2") query.
+    # The guard already set a "forwarding to support" message, so keep it
+    # rather than overwriting it with the generic default.
+    return {"final_response": state.get("final_response", "")}
 
 def evaluation_node(state: OrderState):
     prompt = f"""Evaluate the assistant's response to a customer query using the provided order context.
@@ -520,7 +525,7 @@ else:
             st.rerun()
         st.divider()
         st.caption(
-            "Powered by LangGraph · Groq gpt-oss · build v2\n\n"
+            "Powered by LangGraph · Groq gpt-oss · build v3\n\n"
             "Guardrails: Input intent · Output safety · Conversation monitor"
         )
 
